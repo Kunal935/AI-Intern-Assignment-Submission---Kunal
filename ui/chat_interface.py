@@ -1,5 +1,11 @@
+import os
+import sys
 import streamlit as st
-import requests
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.append(BASE_DIR)
+
 from coreengine_backend.intent_router import detect_intent
 from coreengine_backend.context_retriever import retrieve_context
 from coreengine_backend.response_engine import generate_response
