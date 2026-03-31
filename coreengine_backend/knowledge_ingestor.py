@@ -2,7 +2,6 @@ import os
 import chromadb
 from pypdf import PdfReader
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHROMA_DB_PATH = os.path.join(BASE_DIR, "vector_store")
 
