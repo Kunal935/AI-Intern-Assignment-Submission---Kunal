@@ -1,12 +1,3 @@
-Samajh gaya bhai 😄
-👉 tu chah raha hai **clean + proper formatted + ekdum copy-paste ready README**
-👉 without broken formatting, code blocks proper, aur natural tone
-
-Ye le — **FINAL polished version (direct GitHub pe paste kar de)** 💣
-
----
-
-```md
 # Multi-Context RAG Chatbot
 
 This project is a context-aware AI chatbot that can handle queries from different domains like general questions, NEC (electrical code), and Wattmonk company data.
@@ -17,37 +8,36 @@ The main idea was to build something that doesn’t just give generic answers, b
 
 ## What this chatbot does
 
-- Answers general questions using an LLM  
-- Detects whether the query is related to NEC or Wattmonk  
-- Retrieves relevant information from stored documents using a vector database  
-- Supports follow-up questions (basic context awareness)  
+* Answers general questions using an LLM
+* Detects whether the query is related to NEC or Wattmonk
+* Retrieves relevant information from stored documents using a vector database
+* Supports follow-up questions (basic context awareness)
 
 ---
 
 ## Tech Stack
 
-- Python  
-- FastAPI (backend structure)  
-- Streamlit (UI)  
-- ChromaDB (vector database)  
-- Gemini API (LLM for response generation)  
+* Python
+* FastAPI (backend structure)
+* Streamlit (UI)
+* ChromaDB (vector database)
+* Gemini API (LLM for response generation)
 
 ---
 
 ## How it works (simple idea)
 
-1. User asks a question  
-2. System detects the intent (general / NEC / Wattmonk)  
-3. If domain-specific → relevant chunks are retrieved from the vector database  
-4. Context is passed to the LLM  
-5. Final response is generated  
+1. User asks a question
+2. System detects the intent (general / NEC / Wattmonk)
+3. If domain-specific → relevant chunks are retrieved from the vector database
+4. Context is passed to the LLM
+5. Final response is generated
 
 ---
 
 ## Project Structure
 
 ```
-
 coreengine_backend/
 │   app_server.py
 │   intent_router.py
@@ -65,7 +55,6 @@ knowledge_base/
 vector_store/  (generated at runtime)
 │
 project_docs/
-
 ```
 
 ---
@@ -75,10 +64,8 @@ project_docs/
 ### 1. Clone the repository
 
 ```
-
 git clone <your_repo_link>
 cd project_folder
-
 ```
 
 ---
@@ -86,9 +73,7 @@ cd project_folder
 ### 2. Install dependencies
 
 ```
-
 pip install -r requirements.txt
-
 ```
 
 ---
@@ -96,17 +81,15 @@ pip install -r requirements.txt
 ### 3. Set API key
 
 #### Windows
+
 ```
-
 set GEMINI_API_KEY=your_api_key
-
 ```
 
 #### Linux/macOS
+
 ```
-
 export GEMINI_API_KEY=your_api_key
-
 ```
 
 ---
@@ -114,9 +97,7 @@ export GEMINI_API_KEY=your_api_key
 ### 4. Run ingestion (first time only)
 
 ```
-
 python coreengine_backend/knowledge_ingestor.py
-
 ```
 
 This step creates the vector database from the PDFs.
@@ -126,9 +107,7 @@ This step creates the vector database from the PDFs.
 ### 5. Run the application
 
 ```
-
 streamlit run ui/chat_interface.py
-
 ```
 
 ---
@@ -136,66 +115,28 @@ streamlit run ui/chat_interface.py
 ## Example queries
 
 ### General
-- What is machine learning?  
+
+* What is machine learning?
 
 ### NEC
-- What does NEC say about grounding?  
-- Explain Article 250 in NEC  
+
+* What does NEC say about grounding?
+* Explain Article 250 in NEC
 
 ### Wattmonk
-- What does Wattmonk do?  
-- Tell me about Wattmonk services  
+
+* What does Wattmonk do?
+* Tell me about Wattmonk services
 
 ---
 
 ## Deployment Notes
 
-- `vector_store/` is not included in the repository  
-- It is generated automatically from the PDFs  
-- API keys are handled using environment variables or Streamlit secrets  
+* `vector_store/` is not included in the repository
+* It is generated automatically from the PDFs
+* API keys are handled using environment variables or Streamlit secrets
 
----
-
-## What I learned while building this
-
-- How RAG works in real-world applications  
-- Handling context in conversations is more complex than expected  
-- Debugging retrieval is often harder than debugging the model  
-- Keeping the system simple helps more than over-engineering  
-
----
-
-## Future Improvements
-
-- Better intent detection  
-- Hybrid search (semantic + keyword)  
-- Improved UI/UX  
-- User-based personalization  
-
----
 
 ## Author
 
-Kunal Rawat
-```
-
----
-
-# 💣 Ab ye perfect hai kyunki:
-
-👉 Proper markdown formatting
-👉 Clean structure
-👉 No broken code blocks
-👉 Natural tone (AI jaisa nahi)
-👉 Recruiter-friendly
-
----
-
-# 🚀 Next step
-
-Bol:
-👉 **“user guide bana”**
-ya
-👉 **“architecture diagram text me bana”**
-
-Main next doc bhi same level pe bana dunga 💣
+Kunal
