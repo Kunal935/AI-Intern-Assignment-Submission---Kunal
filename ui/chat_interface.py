@@ -1,5 +1,8 @@
 import streamlit as st
 import requests
+from coreengine_backend.intent_router import detect_intent
+from coreengine_backend.context_retriever import retrieve_context
+from coreengine_backend.response_engine import generate_response
 
 API_URL = "http://127.0.0.1:8000/chat"
 
