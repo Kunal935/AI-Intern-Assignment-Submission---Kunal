@@ -7,7 +7,10 @@ from context_retriever import retrieve_context
 from response_engine import generate_response
 
 
-app = FastAPI(title="Multi-Context RAG Chatbot API")
+app = FastAPI(
+    title="Multi-Context RAG Chatbot API",
+    description="A context-aware RAG chatbot backend for General, NEC, and Wattmonk queries."
+)
 
 
 class ChatRequest(BaseModel):
@@ -18,24 +21,21 @@ class ChatRequest(BaseModel):
 
 @app.get("/")
 def home():
-    return {"message": "RAG Chatbot API is running successfully."}
+    return {
+        "message": "RAG Chatbot API is running successfully."
+    }
 
 
 @app.post("/chat")
 def chat(request: ChatRequest):
+    # Step 1: Detect intent
     intent_result = detect_intent(request.query, request.last_context)
     intent = intent_result["intent"]
 
+    # Step 2: Retrieve relevant context
     retrieved = retrieve_context(request.query, intent)
 
-    print("\n=== DEBUG REQUEST ===")
-    print("Query:", request.query)
-    print("Intent:", intent)
-    print("Retrieved source:", retrieved["source"])
-    print("Retrieved confidence:", retrieved["confidence"])
-    print("Retrieved context preview:", retrieved["context"][:1000] if retrieved["context"] else "EMPTY")
-    print("=====================\n")
-
+    # Step 3: Generate final response
     response = generate_response(
         query=request.query,
         intent=intent,
@@ -45,6 +45,7 @@ def chat(request: ChatRequest):
         chat_history=request.chat_history
     )
 
+    # Step 4: Return structured API response
     return {
         "query": request.query,
         "intent": intent,
