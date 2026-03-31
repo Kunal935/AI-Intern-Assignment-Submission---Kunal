@@ -49,7 +49,12 @@ def is_junk_nec_page(text: str) -> bool:
     return any(marker in lowered for marker in junk_markers)
 
 
-def extract_text_from_pdf(pdf_path: str, source_name: str, start_page: int = 0, end_page: int = None) -> str:
+def extract_text_from_pdf(
+    pdf_path: str,
+    source_name: str,
+    start_page: int = 0,
+    end_page: int = None
+) -> str:
     """
     Reads text from a PDF file.
     For NEC, filters obvious junk/disclaimer pages.
@@ -141,6 +146,18 @@ def ingest_pdf_to_collection(pdf_path: str, collection, source_name: str):
         )
 
     print(f"Stored {len(chunks)} chunks for {source_name}")
+
+
+def initialize_knowledge_base():
+    """
+    Builds both NEC and Wattmonk collections if needed.
+    Useful for deployment startup.
+    """
+    if nec_collection.count() == 0:
+        ingest_pdf_to_collection(NEC_PDF_PATH, nec_collection, "NEC")
+
+    if wattmonk_collection.count() == 0:
+        ingest_pdf_to_collection(WATTMONK_PDF_PATH, wattmonk_collection, "Wattmonk")
 
 
 if __name__ == "__main__":
