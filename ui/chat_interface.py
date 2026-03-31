@@ -1,6 +1,7 @@
 import os
 import sys
 import streamlit as st
+from coreengine_backend.knowledge_ingestor import initialize_knowledge_base
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if BASE_DIR not in sys.path:
@@ -10,6 +11,11 @@ from coreengine_backend.intent_router import detect_intent
 from coreengine_backend.context_retriever import retrieve_context
 from coreengine_backend.response_engine import generate_response
 
+
+if "db_initialized" not in st.session_state:
+    with st.spinner("Initializing knowledge base..."):
+        initialize_knowledge_base()
+    st.session_state.db_initialized = True
 
 st.set_page_config(
     page_title="Multi-Context RAG Chatbot",
