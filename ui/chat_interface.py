@@ -10,15 +10,14 @@ from coreengine_backend.intent_router import detect_intent
 from coreengine_backend.context_retriever import retrieve_context
 from coreengine_backend.response_engine import generate_response
 
-API_URL = "http://127.0.0.1:8000/chat"
 
 st.set_page_config(
     page_title="Multi-Context RAG Chatbot",
-    page_icon="💬🤖",
+    page_icon="🤖",
     layout="centered"
 )
 
-st.title("Multi-Context RAG Chatbot")
+st.title("🤖 Multi-Context RAG Chatbot")
 st.caption("Ask general questions, NEC-related queries, or Wattmonk-specific questions.")
 
 
@@ -29,22 +28,31 @@ if "last_context" not in st.session_state:
     st.session_state.last_context = None
 
 
-def call_backend(query, chat_history, last_context):
-    payload = {
+def run_chat_pipeline(query, chat_history, last_context):
+    intent_result = detect_intent(query, last_context)
+    intent = intent_result["intent"]
+
+    retrieved = retrieve_context(query, intent)
+
+    response = generate_response(
+        query=query,
+        intent=intent,
+        context=retrieved["context"],
+        source=retrieved["source"],
+        confidence=retrieved["confidence"],
+        chat_history=chat_history
+    )
+
+    return {
         "query": query,
-        "chat_history": chat_history,
-        "last_context": last_context if last_context else None
+        "intent": intent,
+        "intent_reason": intent_result["reason"],
+        "is_followup": intent_result["is_followup"],
+        "answer": response["answer"],
+        "source": response["source"],
+        "confidence": response["confidence"],
+        "suggested_questions": response["suggested_questions"]
     }
-
-    try:
-        response = requests.post(API_URL, json=payload)
-        response.raise_for_status()
-        return response.json()
-
-    except requests.exceptions.RequestException as e:
-        st.error(f"Backend Error: {str(e)}")
-        return None
-
 
 
 for msg in st.session_state.messages:
@@ -52,14 +60,15 @@ for msg in st.session_state.messages:
         st.markdown(msg["content"])
 
         if msg["role"] == "assistant":
-            st.caption(f"Source: {msg.get('source', '')} | Confidence: {int(msg.get('confidence', 0) * 100)}%")
+            st.caption(
+                f"Source: {msg.get('source', '')} | Confidence: {int(msg.get('confidence', 0) * 100)}%"
+            )
             st.caption(f"Detected Intent: {msg.get('intent', '')}")
 
             if msg.get("suggested_questions"):
                 st.markdown("**Suggested follow-up questions:**")
                 for q in msg["suggested_questions"]:
                     st.write(f"- {q}")
-
 
 
 user_input = st.chat_input("Type your question here...")
@@ -78,14 +87,13 @@ if user_input:
         for msg in st.session_state.messages
     ]
 
-   
-    result = call_backend(
-        query=user_input,
-        chat_history=backend_history,
-        last_context=st.session_state.last_context
-    )
+    try:
+        result = run_chat_pipeline(
+            query=user_input,
+            chat_history=backend_history,
+            last_context=st.session_state.last_context
+        )
 
-    if result:
         assistant_message = {
             "role": "assistant",
             "content": result["answer"],
@@ -96,18 +104,22 @@ if user_input:
         }
 
         st.session_state.messages.append(assistant_message)
-
         st.session_state.last_context = result["intent"]
 
         with st.chat_message("assistant"):
             st.markdown(result["answer"])
-            st.caption(f"Source: {result['source']} | Confidence: {int(result['confidence'] * 100)}%")
+            st.caption(
+                f"Source: {result['source']} | Confidence: {int(result['confidence'] * 100)}%"
+            )
             st.caption(f"Detected Intent: {result['intent']}")
 
             if result["suggested_questions"]:
                 st.markdown("**Suggested follow-up questions:**")
                 for q in result["suggested_questions"]:
                     st.write(f"- {q}")
+
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
 
 
 with st.sidebar:
@@ -126,8 +138,8 @@ with st.sidebar:
     st.write("- Explain deep learning in simple words")
 
     st.markdown("**NEC**")
-    st.write("- Explain NEC grounding rules")
-    st.write("- What does NEC say about electrical safety?")
+    st.write("- What does NEC say about grounding?")
+    st.write("- Explain Article 250 in NEC")
 
     st.markdown("**Wattmonk**")
     st.write("- What does Wattmonk do?")
